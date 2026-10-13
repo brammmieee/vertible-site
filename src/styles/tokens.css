@@ -1,0 +1,20 @@
+:root {
+  --ink: #120a1a;
+  --surface: #1a0d26;
+  --surface-raised: #2d1b3d;
+  --line: #4a3a5a;
+  --purple: #5b2a9c;
+  --purple-light: #b794f6;
+  --orange: #ff7a2f;
+  --text-bright: #f0e0ff;
+  --text: #e0d0f0;
+  --text-muted: #9d7bd8;
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --maxw: 1200px;
+  --gutter: clamp(20px, 5vw, 64px);
+  --section-y: clamp(96px, 14vh, 180px);
+}
