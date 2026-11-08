@@ -5,7 +5,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
-const props = defineProps({ labels: { type: Object, required: true }, dark: { type: Boolean, default: false }, progress: { type: Number, default: 0 }, poster: String, posterAlt: String })
+const props = defineProps({ labels: { type: Object, required: true }, dark: { type: Boolean, default: false }, progress: { type: Number, default: 0 }, shot: Object, poster: String, posterAlt: String })
 const mount = ref(null)
 const state = ref('loading')
 const status = computed(() => props.labels[state.value])
@@ -19,14 +19,17 @@ function frameModel() {
   if (!camera || !controls) return
   const fov = THREE.MathUtils.degToRad(camera.fov)
   const limitingFov = Math.min(fov, 2 * Math.atan(Math.tan(fov / 2) * camera.aspect))
-  const distance = radius / Math.sin(limitingFov / 2) * .99
-  camera.position.set(Math.sin(angle) * distance, 1.35 + distance * .08, Math.cos(angle) * distance)
-  controls.target.set(0, 1.35, 0)
+  const distance = radius / Math.sin(limitingFov / 2) * .99 * (props.shot?.zoom ?? 1)
+  const theta = props.shot?.angle ?? angle
+  const targetY = props.shot?.targetY ?? 1.35
+  camera.position.set(Math.sin(theta) * distance, targetY + distance * (props.shot?.elevation ?? .08), Math.cos(theta) * distance)
+  controls.target.set(0, targetY, 0)
   controls.update()
   render()
 }
 function followScroll() { if (!motion.matches) { angle = .65 + props.progress * Math.PI * 2; frameModel() } }
 watch(() => props.progress, followScroll)
+watch(() => props.shot, frameModel, { deep: true })
 watch(() => props.labels.label, label => renderer?.domElement.setAttribute('aria-label', label))
 watch(() => props.dark, dark => { if (renderer) { renderer.toneMappingExposure = dark ? .85 : 1.1; render() } })
 

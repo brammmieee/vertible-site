@@ -1,10 +1,10 @@
 <script setup>
-import { computed, ref, watch, onMounted, onBeforeUnmount, defineAsyncComponent } from 'vue'
+import { computed, ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import BrandLogo from './components/ui/BrandLogo.vue'
 import SelectMenu from './components/ui/SelectMenu.vue'
+import PrototypeScroll from './components/home/PrototypeScroll.vue'
 import { copy } from './content/onepage'
 
-const ConceptViewer = defineAsyncComponent(() => import('./components/three/ConceptViewer.vue'))
 const base = import.meta.env.BASE_URL
 const sections = ['concept', 'development', 'about', 'contact']
 function stored(key) { try { return localStorage.getItem(key) } catch { return null } }
@@ -18,22 +18,6 @@ const t = computed(() => copy[lang.value])
 const menu = ref(false)
 const menuButton = ref(null)
 const prototypeStory = ref(null)
-const progress = ref(0)
-let scrollFrame = 0
-function updateProgress() {
-  if (scrollFrame) return
-  scrollFrame = requestAnimationFrame(() => {
-    scrollFrame = 0
-    const rect = prototypeStory.value?.getBoundingClientRect()
-    if (!rect) return
-    const stage = prototypeStory.value.querySelector('.prototype-stage')?.getBoundingClientRect()
-    const mobile = window.matchMedia('(max-width: 720px)').matches
-    const value = mobile && stage
-      ? (innerHeight * .65 - stage.top) / Math.max(1, stage.height + innerHeight * .25)
-      : (100 - rect.top) / Math.max(1, rect.height - innerHeight)
-    progress.value = Math.max(0, Math.min(1, value))
-  })
-}
 const interest = ref(0)
 const active = ref('')
 let observer
@@ -64,6 +48,7 @@ function navigate(event, id) {
   scrollToSection(id)
 }
 function scrollToSection(id) {
+  if (id === 'concept') { prototypeStory.value?.scrollToConcept(); return }
   const el = document.getElementById(id)
   if (!el) return
   el.focus({ preventScroll: true })
@@ -74,22 +59,20 @@ function followHash() {
   const hash = location.hash.slice(1)
   const id = old[hash] || hash
   if (old[hash]) history.replaceState(null, '', `#${id}`)
-  if (id) document.getElementById(id)?.scrollIntoView()
+  if (id === 'concept') prototypeStory.value?.scrollToConcept()
+  else if (id) document.getElementById(id)?.scrollIntoView()
 }
 function onSystem(e) { systemDark.value = e.matches }
 onMounted(() => {
   media.addEventListener('change', onSystem)
   window.addEventListener('hashchange', followHash)
-  window.addEventListener('scroll', updateProgress, { passive: true })
-  window.addEventListener('resize', updateProgress)
-  updateProgress()
   followHash()
   observer = new IntersectionObserver(entries => {
     for (const e of entries) if (e.isIntersecting) active.value = e.target.id
   }, { rootMargin: '-15% 0px -65% 0px' })
   document.querySelectorAll('main section[id]').forEach(el => observer.observe(el))
 })
-onBeforeUnmount(() => { media.removeEventListener('change', onSystem); window.removeEventListener('hashchange', followHash); window.removeEventListener('scroll', updateProgress); window.removeEventListener('resize', updateProgress); cancelAnimationFrame(scrollFrame); observer?.disconnect() })
+onBeforeUnmount(() => { media.removeEventListener('change', onSystem); window.removeEventListener('hashchange', followHash); observer?.disconnect() })
 </script>
 
 <template>
@@ -110,18 +93,7 @@ onBeforeUnmount(() => { media.removeEventListener('change', onSystem); window.re
   </header>
 
   <main id="main" tabindex="-1">
-    <div ref="prototypeStory" class="prototype-story">
-    <div class="sky-clouds" aria-hidden="true" />
-    <div class="prototype-layout container">
-    <section id="top" class="hero" tabindex="-1" aria-labelledby="hero-heading">
-      <div class="hero-copy"><div class="hero-heading"><p class="eyebrow"><span class="small-dot" />{{ t.eyebrow }}</p><h1 id="hero-heading">{{ t.headline[0] }}<br /><span>{{ t.headline[1] }}</span></h1></div><div class="hero-details"><p class="intro">{{ t.intro }}</p><p class="hero-ambition">{{ t.ambition }}</p><div class="hero-actions"><a class="button" href="#concept" @click="navigate($event, 'concept')">{{ t.explore }} <span aria-hidden="true">↓</span></a><a class="text-link" href="#contact" @click="navigate($event, 'contact')">{{ t.join }} <span aria-hidden="true">↗</span></a></div><p class="status"><span class="small-dot" />{{ t.status }}</p></div></div>
-    </section>
-
-    <div class="prototype-stage"><ConceptViewer :labels="t.viewer" :dark="dark" :progress="progress" :poster="`${base}images/concept-r03-front.webp`" :poster-alt="t.heroAlt" /><span class="prototype-caption">{{ t.render }} · {{ lang === 'nl' ? 'Scroll om rond te kijken' : 'Scroll to look around' }}</span></div>
-    <section id="concept" class="section concept-section" tabindex="-1" aria-labelledby="concept-heading">
-      <div class="concept-copy"><p class="eyebrow">01 / {{ t.conceptLabel }}</p><h2 id="concept-heading">{{ t.conceptTitle }}</h2><p>{{ t.conceptBody }}</p><dl class="feature-list"><div v-for="(feature, i) in t.features" :key="i"><dt><span aria-hidden="true">0{{ i + 1 }}</span>{{ feature[0] }}</dt><dd>{{ feature[1] }}</dd></div></dl><p class="concept-note">{{ t.conceptNote }}</p></div>
-    </section>
-    </div></div>
+    <PrototypeScroll ref="prototypeStory" :t="t" :lang="lang" :dark="dark" @navigate="navigate" />
 
     <section id="development" class="section" tabindex="-1" aria-labelledby="development-heading"><div class="container"><div class="section-heading"><div><p class="eyebrow">02 / {{ t.developmentLabel }}</p><h2 id="development-heading">{{ t.developmentTitle }}</h2></div><p>{{ t.developmentBody }}</p></div><ol class="development-steps"><li v-for="(stage, i) in t.stages" :key="i"><div class="step-label"><span>0{{ i + 1 }}</span><span>{{ stage[0] }}</span></div><h3>{{ stage[1] }}</h3><p>{{ stage[2] }}</p></li></ol><p class="development-note">{{ t.developmentNote }}</p></div></section>
 
