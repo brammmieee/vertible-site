@@ -7,7 +7,7 @@ import { about } from '../content/site.js'
   <div class="page">
     <section class="page-head">
       <div class="container">
-        <SectionHeader :tag="about.tag" :title="about.title" />
+        <SectionHeader level="h1" :tag="about.tag" :title="about.title" />
       </div>
     </section>
 

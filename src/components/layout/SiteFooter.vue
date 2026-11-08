@@ -5,9 +5,9 @@ import { brand, footer } from '../../content/site.js'
 <template>
   <footer class="footer">
     <div class="container footer-inner">
-      <div class="foot-line mono">{{ footer.line }}</div>
-      <a class="foot-discord mono" :href="brand.discord" target="_blank" rel="noopener">Join the Discord</a>
-      <div class="foot-note mono">{{ footer.note }}</div>
+      <div class="foot-line">{{ footer.line }}</div>
+      <div class="footer-links"><a :href="`mailto:${brand.email}`">Email Bram</a><a :href="brand.linkedin" target="_blank" rel="noopener">LinkedIn ↗</a><a :href="brand.discord" target="_blank" rel="noopener">Community ↗</a></div>
+      <p class="foot-note">{{ footer.note }}</p>
     </div>
   </footer>
 </template>
@@ -24,7 +24,10 @@ import { brand, footer } from '../../content/site.js'
 }
 .foot-line {
   color: var(--text-bright);
+  font-size: 15px;
 }
+.footer-links { display: flex; flex-wrap: wrap; gap: 24px; font-size: 13px; color: var(--purple); }
+.footer-links a { padding: 8px 0; }
 .foot-discord {
   color: var(--purple-light);
   transition: color 0.2s ease;
@@ -34,6 +37,6 @@ import { brand, footer } from '../../content/site.js'
 }
 .foot-note {
   color: var(--text-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 </style>

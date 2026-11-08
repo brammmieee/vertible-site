@@ -1,11 +1,14 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, watch, onMounted, onBeforeUnmount } from 'vue'
 import { useRoute } from 'vue-router'
 import { brand, nav } from '../../content/site.js'
 
 const route = useRoute()
 const scrolled = ref(false)
 const open = ref(false)
+const menuButton = ref(null)
+watch(() => route.fullPath, () => { open.value = false })
+function closeMenu() { open.value = false; menuButton.value?.focus() }
 
 function onScroll() {
   scrolled.value = window.scrollY > 24
@@ -19,27 +22,27 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 </script>
 
 <template>
-  <header class="nav" :class="{ scrolled }">
+  <header class="nav" :class="{ scrolled }" @keydown.esc="closeMenu">
     <div class="nav-inner container">
       <RouterLink to="/" class="wordmark" @click="open = false">
-        <span class="wordmark-mark">▮</span>
-        {{ brand.name.toUpperCase() }}
+        <svg class="wordmark-mark" width="29" height="30" viewBox="0 0 29 30" aria-hidden="true"><path d="M3 4L14 26L25 4" fill="none" stroke="currentColor" stroke-width="6"/><circle cx="25" cy="4" r="3" fill="#a74618"/></svg>
+        {{ brand.name.toLowerCase() }}
       </RouterLink>
 
-      <nav class="links">
+      <nav class="links" aria-label="Main navigation">
         <RouterLink v-for="l in nav" :key="l.to" :to="l.to" class="link mono">
           {{ l.label }}
         </RouterLink>
         <RouterLink to="/contact" class="pill mono">Contact</RouterLink>
       </nav>
 
-      <button class="burger" :class="{ open }" aria-label="Menu" @click="open = !open">
+      <button ref="menuButton" class="burger" :class="{ open }" :aria-expanded="open" aria-controls="mobile-nav" :aria-label="open ? 'Close menu' : 'Open menu'" @click="open = !open">
         <span></span><span></span>
       </button>
     </div>
 
     <transition name="drop">
-      <nav v-if="open" class="mobile mono">
+      <nav v-if="open" id="mobile-nav" class="mobile mono" aria-label="Mobile navigation">
         <RouterLink v-for="l in nav" :key="l.to" :to="l.to" @click="open = false">{{ l.label }}</RouterLink>
         <RouterLink to="/contact" @click="open = false">Contact</RouterLink>
       </nav>
@@ -53,15 +56,16 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
   inset: 0 0 auto 0;
   z-index: 50;
   transition: background 0.4s ease, border-color 0.4s ease;
-  border-bottom: 1px solid transparent;
+  background: rgba(250, 248, 244, .97);
+  border-bottom: 1px solid var(--line);
 }
 .nav.scrolled {
-  background: rgba(18, 10, 26, 0.82);
+  background: rgba(250, 248, 244, .97);
   backdrop-filter: blur(12px);
   border-color: var(--line);
 }
 .nav-inner {
-  height: 72px;
+  height: 82px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -69,15 +73,15 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 .wordmark {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 18px;
-  letter-spacing: 0.02em;
+  font-size: 27px;
+  letter-spacing: -0.055em;
   color: var(--text-bright);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 .wordmark-mark {
-  color: var(--orange);
+  color: var(--purple);
   font-size: 14px;
 }
 .links {
@@ -105,6 +109,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 .pill:hover {
   background: var(--purple);
   border-color: var(--purple);
+  color: #fff;
 }
 .burger {
   display: none;
@@ -113,7 +118,9 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
   background: none;
   border: none;
   cursor: pointer;
-  padding: 6px;
+  padding: 12px;
+  min-width: 44px;
+  min-height: 44px;
 }
 .burger span {
   display: block;

@@ -1,229 +1,48 @@
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import VtbScene from '../three/VtbScene.vue'
-import SpecTag from '../ui/SpecTag.vue'
-import { hero, chapters } from '../../content/site.js'
-import { highlight } from '../../utils/highlight.js'
-
-gsap.registerPlugin(ScrollTrigger)
-
-const heroEl = ref(null)
-const active = ref(0)
-const started = ref(false)
-
-const state = reactive({
-  rotY: -0.7,
-  tilt: 0,
-  lift: 0,
-  crouch: 0,
-  wheelSpin: 0,
-  highlight: 0,
-  camDist: 7,
-  camTheta: 0.45,
-  camHeight: 1.7,
-  camTargetY: 1.7,
-  intro: 1,
-})
-
-let st = null
-
-onMounted(() => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  if (reduce) {
-    Object.assign(state, { rotY: 0.3, camDist: 6.4, camHeight: 1.7, intro: 0 })
-    started.value = true
-    return
-  }
-
-  const tl = gsap.timeline({
-    defaults: { ease: 'none' },
-    scrollTrigger: {
-      trigger: heroEl.value,
-      start: 'top top',
-      end: '+=500%',
-      scrub: 1,
-      pin: true,
-      anticipatePin: 1,
-      onUpdate: (self) => {
-        started.value = self.progress > 0.02
-        active.value = Math.min(chapters.length - 1, Math.floor(self.progress * chapters.length))
-      },
-    },
-  })
-
-  tl.to(state, { intro: 0, rotY: 0.3, camDist: 6.2, camHeight: 1.7, duration: 1 }, 0)
-  tl.to(state, { camTheta: 1.55, camDist: 3.1, camHeight: 1.0, camTargetY: 0.55, highlight: 1, duration: 1 }, 1)
-  tl.to(state, { lift: 0.55, camHeight: 1.5, camTargetY: 0.95, highlight: 0, duration: 1 }, 2)
-  tl.to(state, { crouch: 1, lift: 0, camDist: 4.2, camHeight: 1.0, camTargetY: 0.45, duration: 1 }, 3)
-  tl.to(state, { camTheta: 0.0, crouch: 0, camDist: 5.4, camHeight: 1.5, camTargetY: 0.7, duration: 1 }, 4)
-  tl.to(state, { wheelSpin: 1, tilt: 0.07, rotY: 0.3, camTheta: 0.45, camDist: 6.6, camHeight: 1.7, duration: 1 }, 5)
-
-  st = tl.scrollTrigger
-})
-
-onBeforeUnmount(() => {
-  if (st) st.kill()
-})
+const image = `${import.meta.env.BASE_URL}images/concept-r03-front.webp`
+function explore() { document.getElementById('concept')?.scrollIntoView() }
 </script>
 
 <template>
-  <section ref="heroEl" class="hero dotgrid">
-    <VtbScene :state="state" />
-
-    <div class="overlay container">
-      <div class="hero-copy" :style="{ opacity: state.intro, transform: `translateY(calc(-50% + ${(1 - state.intro) * -24}px))` }">
-        <SpecTag :text="hero.tag" />
-        <h1 class="headline">{{ hero.headline }}</h1>
-        <p class="sub">{{ hero.sub }}</p>
-        <div class="hint mono">↓ {{ hero.hint }}</div>
+  <section class="hero container" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow"><span class="status-dot" /> Mobility, with more possibilities</p>
+      <h1 id="hero-title">More of life.<br /><span>On your terms.</span></h1>
+      <p class="intro">A walk with friends. A day outdoors. Being part of the conversation.</p>
+      <p class="description">We’re developing an upright mobility concept for people with limited lower-body mobility, with the ambition to make more of these moments possible.</p>
+      <div class="actions">
+        <button class="button" @click="explore">Explore the concept <span aria-hidden="true">↓</span></button>
+        <RouterLink class="text-link" to="/contact">Help us build it <span aria-hidden="true">↗</span></RouterLink>
       </div>
-
-      <div class="captions">
-        <div
-          v-for="(c, i) in chapters"
-          :key="c.tag"
-          class="caption"
-          :class="{ on: active === i && started }"
-        >
-          <SpecTag :text="c.tag" />
-          <h2 class="cap-title">
-            <template v-for="(seg, i) in highlight(c.title)" :key="i">
-              <span v-if="seg.hi" class="hi">{{ seg.text }}</span>
-              <template v-else>{{ seg.text }}</template>
-            </template>
-          </h2>
-          <p class="cap-text">
-            <template v-for="(seg, i) in highlight(c.text)" :key="i">
-              <span v-if="seg.hi" class="hi">{{ seg.text }}</span>
-              <template v-else>{{ seg.text }}</template>
-            </template>
-          </p>
-        </div>
-      </div>
-
-      <div class="rail">
-        <span
-          v-for="(c, i) in chapters"
-          :key="i"
-          class="rail-dot"
-          :class="{ on: active === i }"
-        />
-      </div>
+      <p class="stage"><span /> In development · Seeking prototype funding</p>
     </div>
+    <figure class="hero-visual">
+      <img :src="image" width="1050" height="1200" fetchpriority="high" alt="Digital concept of Vertible’s purple wheeled support frame with a human mannequin in a supported upright posture." />
+      <figcaption><span>Meet the Vertible concept</span><span>Design study · R03</span></figcaption>
+    </figure>
   </section>
+  <div class="intro-strip"><div class="container"><p>More choice in how we move.</p><p>Developed in the Netherlands <span aria-hidden="true">↗</span></p></div></div>
 </template>
 
 <style scoped>
-.hero {
-  position: relative;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-}
-.overlay {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-.hero-copy {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  will-change: opacity, transform;
-}
-.headline {
-  font-size: clamp(52px, 10vw, 120px);
-  letter-spacing: -0.03em;
-}
-.headline,
-.sub {
-  text-shadow: 0 2px 28px rgba(18, 10, 26, 0.85);
-}
-.sub {
-  max-width: 560px;
-  color: var(--text-muted);
-  font-size: 20px;
-}
-.hint {
-  color: var(--text-muted);
-  animation: bob 2.2s ease-in-out infinite;
-}
-@keyframes bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-.captions {
-  position: absolute;
-  left: var(--gutter);
-  bottom: 120px;
-  width: min(480px, calc(100% - 2 * var(--gutter)));
-}
-.caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-  pointer-events: none;
-}
-.caption.on {
-  opacity: 1;
-  transform: translateY(0);
-}
-.cap-title {
-  font-size: clamp(24px, 4vw, 40px);
-}
-.cap-text {
-  color: var(--text-muted);
-  font-size: 18px;
-}
-.hi {
-  color: var(--orange);
-}
-
-.rail {
-  position: absolute;
-  right: var(--gutter);
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.rail-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--line);
-  transition: background 0.3s ease, transform 0.3s ease;
-}
-.rail-dot.on {
-  background: var(--orange);
-  transform: scale(1.35);
-}
-
-@media (max-width: 720px) {
-  .captions {
-    width: 100%;
-    bottom: 96px;
-  }
-  .rail {
-    display: none;
-  }
-}
+.hero { display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center; padding-top: 130px; padding-bottom: 48px; }
+.hero-copy { padding: 24px 0; }
+.eyebrow { display: flex; align-items: center; gap: 10px; }
+.status-dot { width: 7px; height: 7px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+h1 { font-size: clamp(44px, 4.5vw, 68px); line-height: 1.08; letter-spacing: -.055em; margin: 28px 0; font-weight: 500; }
+h1 span { color: var(--purple); }
+.intro { font-size: 22px; line-height: 1.5; max-width: 420px; margin-bottom: 18px; }
+.description { font-size: 17px; color: var(--text-muted); max-width: 470px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 30px; }
+.stage { display: flex; align-items: center; gap: 9px; color: var(--text-muted); font-size: 12px; margin-top: 30px; }
+.stage span { width: 6px; height: 6px; border-radius: 50%; background: var(--purple); }
+.hero-visual { border-radius: 140px 12px 12px 12px; overflow: hidden; background: #cdd3d3; position: relative; }
+.hero-visual img { display: block; width: 100%; height: auto; }
+figcaption { display: flex; justify-content: space-between; gap: 12px; padding: 16px 22px; background: #eeeaf1; color: var(--plum); font-size: 11px; }
+figcaption span:first-child { font-weight: 500; }
+.intro-strip { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.intro-strip .container { display: flex; justify-content: space-between; padding-top: 22px; padding-bottom: 22px; font-size: 13px; color: var(--text-muted); }
+.intro-strip span { margin-left: 15px; color: var(--orange); }
+@media (max-width: 900px) { .hero { gap: 32px; } h1 { font-size: 48px; } .actions { gap: 12px; } }
+@media (max-width: 720px) { .hero { grid-template-columns: 1fr; padding-top: 108px; gap: 16px; } h1 { font-size: clamp(42px, 9vw, 60px); } .hero-copy { padding: 12px 0; } .eyebrow { font-size: 10px; } .hero-visual { border-top-left-radius: 90px; } .intro-strip .container { gap: 16px; font-size: 11px; } }
 </style>

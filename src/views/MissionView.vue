@@ -8,7 +8,7 @@ import { mission } from '../content/site.js'
   <div class="page">
     <section class="page-head">
       <div class="container">
-        <SectionHeader :tag="mission.tag" :title="mission.title" :lead="mission.lead" />
+        <SectionHeader level="h1" :tag="mission.tag" :title="mission.title" :lead="mission.lead" />
       </div>
     </section>
 

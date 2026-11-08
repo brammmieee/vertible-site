@@ -7,7 +7,7 @@ import { brand, contact } from '../content/site.js'
   <div class="page">
     <section class="page-head">
       <div class="container">
-        <SectionHeader :tag="contact.tag" :title="contact.title" :lead="contact.body" />
+        <SectionHeader level="h1" :tag="contact.tag" :title="contact.title" :lead="contact.body" />
       </div>
     </section>
 

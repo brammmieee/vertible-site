@@ -4,13 +4,14 @@ defineProps({
   title: { type: String, required: true },
   lead: { type: String, default: '' },
   align: { type: String, default: 'left' },
+  level: { type: String, default: 'h2' },
 })
 </script>
 
 <template>
   <div class="section-header" :class="align">
     <span v-if="tag" class="mono tag">{{ tag }}</span>
-    <h2 class="title">{{ title }}</h2>
+    <component :is="level" class="title">{{ title }}</component>
     <p v-if="lead" class="lead">{{ lead }}</p>
   </div>
 </template>
@@ -27,7 +28,9 @@ defineProps({
   color: var(--purple-light);
 }
 .title {
-  font-size: clamp(34px, 6vw, 64px);
+  font-size: clamp(34px, 4vw, 56px);
+  font-weight: 500;
+  line-height: 1.14;
   margin-top: 16px;
   width: fit-content;
 }

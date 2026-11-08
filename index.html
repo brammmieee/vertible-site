@@ -1,15 +1,29 @@
 <!doctype html>
-<html lang="en">
+<html lang="nl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vertible — VTB0, your freedom, upright</title>
+    <title>Vertible — Meer bewegingsvrijheid.</title>
     <meta
       name="description"
-      content="VTB0 is a self-balancing, two-wheeled vertibike that holds wheelchair users upright and takes them off the path. First batch: €18,500."
+      content="Vertible ontwikkelt een in hoogte verstelbaar mobiliteitshulpmiddel op twee wielen, met ondersteuning voor het lichaam. Help ons het eerste prototype te bouwen."
     />
-    <meta name="theme-color" content="#120a1a" />
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <meta name="theme-color" content="#fffbff" />
+    <meta property="og:title" content="Vertible — Meer bewegingsvrijheid." />
+    <meta property="og:description" content="Een andere kijk op mobiliteit. Help ons de stap te zetten van digitaal ontwerp naar een werkend prototype." />
+    <meta property="og:type" content="website" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=7" />
+    <script>
+      (() => {
+        let preference = 'system';
+        try { preference = localStorage.getItem('vertible-theme') || 'system'; } catch {}
+        const dark = preference === 'dark' || (preference !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+        document.querySelector('meta[name="theme-color"]').content = dark ? '#21151f' : '#fffbff';
+      })();
+    </script>
+    <style>html{background:#fffbff}html[data-theme=dark]{background:#21151f}</style>
   </head>
   <body>
     <div id="app"></div>

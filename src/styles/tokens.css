@@ -1,20 +1,51 @@
 :root {
-  --ink: #120a1a;
-  --surface: #1a0d26;
-  --surface-raised: #2d1b3d;
-  --line: #4a3a5a;
-  --purple: #5b2a9c;
-  --purple-light: #b794f6;
-  --orange: #ff7a2f;
-  --text-bright: #f0e0ff;
-  --text: #e0d0f0;
-  --text-muted: #9d7bd8;
+  /* Clear sky, pink lilac and burgundy. */
+  --ink: #fffbff;
+  --surface: #f4eaf5;
+  --surface-raised: #ffffff;
+  --line: #ddd4e9;
+  --purple: #654099;
+  --purple-light: #7954b0;
+  --orange: #7954b0;
+  --apricot: #f6aa72;
+  --plum: #30213e;
+  --about-bg: #eee7f6;
+  --text-bright: #30213e;
+  --text: #463d4b;
+  --text-muted: #665e6a;
+  --button-bg: #48212b;
+  --button-text: #ffffff;
+  --header-bg: #faf8ffe8;
+  --portrait-bg: #ded3e8;
+  --viewer-bg: #e1dfdf;
+  --control-line: #86778e;
 
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --maxw: 1200px;
+  --maxw: 1320px;
   --gutter: clamp(20px, 5vw, 64px);
-  --section-y: clamp(96px, 14vh, 180px);
+  --section-y: clamp(80px, 10vw, 144px);
+}
+
+:root[data-theme='dark'] {
+  --ink: #21151f;
+  --surface: #30202d;
+  --surface-raised: #402b3a;
+  --line: #624451;
+  --control-line: #91849e;
+  --purple: #c2a5e3;
+  --purple-light: #c2a5e3;
+  --orange: #c2a5e3;
+  --plum: #f5f1ea;
+  --about-bg: #1c132a;
+  --portrait-bg: #392d47;
+  --text-bright: #f5f1ea;
+  --text: #e3dce9;
+  --text-muted: #c7bece;
+  --button-bg: #ddc9f6;
+  --button-text: #211133;
+  --header-bg: #100b19e8;
+  --viewer-bg: #39353e;
 }

@@ -12,11 +12,11 @@ const open = ref(0)
       <SectionHeader v-reveal :tag="faq.tag" :title="faq.title" />
       <div class="faq">
         <div v-for="(item, i) in faq.items" :key="item.q" v-reveal="i * 70" class="item">
-          <button class="q" :class="{ open: open === i }" @click="open = open === i ? -1 : i">
+          <button :id="`question-${i}`" class="q" :class="{ open: open === i }" :aria-expanded="open === i" :aria-controls="`answer-${i}`" @click="open = open === i ? -1 : i">
             <span>{{ item.q }}</span>
             <span class="plus mono">{{ open === i ? '−' : '+' }}</span>
           </button>
-          <div class="a" :class="{ open: open === i }">
+          <div v-show="open === i" :id="`answer-${i}`" class="a open" role="region" :aria-labelledby="`question-${i}`">
             <p>{{ item.a }}</p>
           </div>
         </div>
