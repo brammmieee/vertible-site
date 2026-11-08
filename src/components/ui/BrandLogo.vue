@@ -1,8 +1,9 @@
 <template>
   <span class="brand-logo" role="img" aria-label="Vertible">
-    <svg width="34" height="34" viewBox="0 0 60 60" fill="none" aria-hidden="true">
-      <path d="M2 6H14L37 46M2 7L32 59L48 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-      <circle cx="48" cy="12" r="11" fill="currentColor" />
+    <svg width="34" height="34" viewBox="240 250 780 720" fill="none" aria-hidden="true">
+      <path d="M258 354H454L690 811L852 412L881 425L663 945H566Z" fill="#c39af0" />
+      <path d="M302 381H438L676 843L645 918H582Z" fill="#5d407c" />
+      <circle cx="866" cy="412" r="135" fill="#c39af0" />
     </svg>
     <span aria-hidden="true">ertible</span>
   </span>
