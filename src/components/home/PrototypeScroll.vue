@@ -15,7 +15,6 @@ const chapters = computed(() => [
   { title: props.t.conceptTitle, text: props.t.conceptBody },
   ...props.t.features.map(([title, text]) => ({ title, text })),
 ])
-const base = import.meta.env.BASE_URL
 let media, timeline
 function scrollToConcept() {
   const trigger = timeline?.scrollTrigger
@@ -70,7 +69,7 @@ onBeforeUnmount(() => media?.revert())
   <section id="top" ref="root" class="scroll-prototype prototype-story" :class="{ 'motion-reduced': reduced, 'dark-scene': dark }" tabindex="-1" aria-labelledby="hero-heading">
     <div class="sky-clouds" aria-hidden="true" />
     <div class="scroll-model" :style="{ transform: `translateX(${shot.shift}%)` }">
-      <ConceptViewer :labels="t.viewer" :dark="dark" :shot="shot" :poster="`${base}images/concept-r03-front.webp`" :poster-alt="t.heroAlt" />
+      <ConceptViewer :labels="t.viewer" :dark="dark" :shot="shot" />
     </div>
     <div class="scroll-vignette" aria-hidden="true" />
     <div class="scroll-overlay container">
@@ -79,7 +78,7 @@ onBeforeUnmount(() => media?.revert())
         <h1 id="hero-heading">{{ t.headline[0] }}<br /><span>{{ t.headline[1] }}</span></h1>
         <p class="scroll-intro-text">{{ t.intro }}</p>
         <p class="scroll-ambition">{{ t.ambition }}</p>
-        <div class="scroll-actions"><a class="button" href="#concept" @click.prevent="scrollToConcept">{{ t.explore }} <span aria-hidden="true">↓</span></a><a class="text-link" href="#contact" @click="emit('navigate', $event, 'contact')">{{ t.join }} ↗</a></div>
+        <div class="scroll-actions"><a class="button" href="#concept" @click.prevent="scrollToConcept">{{ t.explore }} <span aria-hidden="true">↓</span></a><a class="button button-collaborate" href="#contact" @click="emit('navigate', $event, 'contact')">{{ t.join }} <span aria-hidden="true">↗</span></a></div>
         <p class="scroll-status">{{ t.status }}</p>
       </div>
       <div id="concept" class="scroll-captions" tabindex="-1">
@@ -114,6 +113,7 @@ onBeforeUnmount(() => media?.revert())
 .scroll-ambition { max-width: 640px; margin-top: 16px; font-size: 14px; }
 .scroll-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 24px; margin-top: 24px; pointer-events: auto; text-shadow: none; }
 .scroll-status { margin-top: 20px; font-size: 11px; }
+.scroll-actions .button-collaborate { background: #fff6fa; color: #431f27; border-color: #431f27; }
 .scroll-captions { position: absolute; left: var(--gutter); bottom: 12%; width: min(510px, calc(100% - 2 * var(--gutter))); }
 .scroll-caption { position: absolute; bottom: 0; left: 0; width: 100%; text-shadow: 0 2px 18px #f6ebff99; }
 .scroll-caption h2 { font-size: clamp(28px, 3.1vw, 44px); margin: 20px 0; }

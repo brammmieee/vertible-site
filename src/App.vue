@@ -19,7 +19,7 @@ const menu = ref(false)
 const menuButton = ref(null)
 const prototypeStory = ref(null)
 const interest = ref(0)
-const active = ref('')
+const active = ref('concept')
 let observer
 const mail = computed(() => `mailto:info@vertible.eu?subject=${encodeURIComponent(`Vertible — ${t.value.interests[interest.value]}`)}&body=${encodeURIComponent(`${t.value.emailGreeting}\n\n${t.value.emailPrompt} ${t.value.interests[interest.value].toLowerCase()}.\n\n`)}`)
 function save(key, value) { try { localStorage.setItem(key, value) } catch { /* Preferences still work without storage. */ } }
@@ -68,7 +68,7 @@ onMounted(() => {
   window.addEventListener('hashchange', followHash)
   followHash()
   observer = new IntersectionObserver(entries => {
-    for (const e of entries) if (e.isIntersecting) active.value = e.target.id
+    for (const e of entries) if (e.isIntersecting) active.value = e.target.id === 'top' ? 'concept' : e.target.id
   }, { rootMargin: '-15% 0px -65% 0px' })
   document.querySelectorAll('main section[id]').forEach(el => observer.observe(el))
 })
@@ -89,7 +89,7 @@ onBeforeUnmount(() => { media.removeEventListener('change', onSystem); window.re
         <button ref="menuButton" class="menu-button" :aria-expanded="menu" aria-controls="mobile-nav" :aria-label="menu ? t.close : t.menu" @click="menu = !menu"><span aria-hidden="true">{{ menu ? '×' : '☰' }}</span></button>
       </div>
     </div>
-    <nav v-if="menu" id="mobile-nav" class="mobile-nav container" :aria-label="t.navigation"><a v-for="(id, i) in sections" :key="id" :href="`#${id}`" @click="navigate($event, id)">{{ t.nav[i] }}</a></nav>
+    <nav v-if="menu" id="mobile-nav" class="mobile-nav container" :aria-label="t.navigation"><a v-for="(id, i) in sections" :key="id" :href="`#${id}`" :aria-current="active === id ? 'location' : undefined" @click="navigate($event, id)">{{ t.nav[i] }}</a></nav>
   </header>
 
   <main id="main" tabindex="-1">
